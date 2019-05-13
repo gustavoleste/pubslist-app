@@ -1,49 +1,76 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from 'react';
+import LogIn from './src/screens/LogIn'
+import SignUp from './src/screens/SignUp'
+import PubsList from './src/screens/PubsList'
+import PubProfile from './src/screens/PubProfile'
+import MyProfile from './src/screens/MyProfile'
+import UserProfile from './src/screens/UserProfile'
+import Header from './src/components/Header'
+import {createAppContainer, createSwitchNavigator, createStackNavigator} from 'react-navigation'
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+const AuthStack = createSwitchNavigator(
+  {
+    LogIn,
+    SignUp 
+  },
+  {
+    initialRouteName: 'LogIn'
   }
-}
+)
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+const AppStack = createStackNavigator(
+  {
+    PubsList: {
+      screen: PubsList,
+      navigationOptions:({navigation})=>{
+        return{
+          headerTitle: () => <Header title='Pubs' nav={navigation}/>
+        }
+        
+      }
+    },
+    PubProfile: {
+      screen: PubProfile,
+      navigationOptions:({navigation})=>{
+        return{
+          headerTitle: () => <Header title='Pub Profile' nav={navigation}/>
+        }
+      }
+    },
+    MyProfile: {
+      screen: MyProfile,
+      navigationOptions:({navigation})=>{
+        return{
+          headerTitle: () => <Header title='My Profile' nav={navigation} hideSettings />
+        }
+      }
+    },
+    UserProfile: {
+      screen: UserProfile,
+      navigationOptions:({navigation})=>{
+        return{
+          headerTitle: () => <Header title='User Profile' nav={navigation}/>
+        }
+      }
+    }     
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  {
+    initialRouteName: 'PubsList'
+  }
+)
+
+const AppNavigator = createSwitchNavigator(
+  {
+    AuthStack,
+    AppStack 
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+  {
+    initialRouteName: 'AuthStack'
+  }
+)
+
+const AppContainer = createAppContainer(AppNavigator)
+
+const App = () => <AppContainer/>
+
+export default App
